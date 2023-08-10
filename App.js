@@ -4,11 +4,12 @@ import { useState } from 'react';
 import data from './data.js';
 import {Router, Routes, Route, Link, useNavigate,Outlet} from 'react-router-dom'
 import Detail from './routes/Detail.js';
+import axios from 'axios';
 
 
 function App() {
 
-  let [shoes] = useState(data)
+  let [shoes ,setShoes] = useState(data)
   let navigate = useNavigate();
   
   return (
@@ -18,7 +19,7 @@ function App() {
           <Navbar.Brand href="#home">Navbar</Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link onClick={()=>{navigate('/')}}>Home</Nav.Link>
-            <Nav.Link onClick={()=>{navigate('detail')}}>Detail</Nav.Link>
+            <Nav.Link onClick={()=>{navigate('detail/1')}}>Detail</Nav.Link>
           </Nav>
         </Container>
       </Navbar>
@@ -34,20 +35,21 @@ function App() {
              })}
       </div>
     </div> 
+    <button onClick={()=>{ 
+      axios.get('https://codingapple1.github.io/shop/data2.json')
+      .then((결과)=>{
+        console.log(결과.data)
+        let copy = [...shoes, ...결과.data];
+        setShoes(copy);
+      })
+      
+    }}>더보기</button>
   </>
 } /> 
-        <Route path="/detail" element={<Detail/>} />
+      <Route path="/detail/:id" element={<Detail shoes={shoes}/>} />
+    </Routes>
 
-        <Route path="/about" element={<About/>} >
-         <Route path="member" element={<div>멤버임</div>} />
-         <Route path="location" element={<div>위치정보임</div>} />
-        </Route>
-
-      </Routes>
-
-      <Link to="/">홈</Link>
-      <Link to="/detail">상세페이지</Link>
-    </div>
+  </div>
   );
 }
 
